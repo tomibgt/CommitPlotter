@@ -9,8 +9,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import math
+import sys
 import datetime as dt
 import matplotlib
+from BgtConfiguration import *
 
 __author__  = "Johannes Holvitie, Tomi 'bgt' Suovuo"
 __version__ = "0.1"
@@ -44,23 +46,34 @@ def freq(dates, deltas, c, l, h):
 
 def loadAndPlot(path, f, c, l, h):
     data = np.genfromtxt(path, dtype=None, delimiter=";", usecols=[1,5])
+    #data = np.genfromtxt(path, dtype=None, delimiter=";", usecols=[1,5], names=True)
     du = [d.split(" ")[0] for d in data[1:,0]]
-    dates = [dt.datetime.strptime(d,'%m.%d.%Y').date() for d in du]
+    #dates = [dt.datetime.strptime(d,'%m.%d.%Y').date() for d in du]
+    dates = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in du]
     deltas = data[1:,1]
     freq(dates, deltas, c, l, h)
     plt.plot_date(dates, deltas, fmt=f+c, alpha=0.75)
 
-root_path = "csv/"
+def printHowToUse():
+    print "Usage: python analyser.py inputfile.csv"
 
 deprecatedTime = dt.datetime.strptime('5.19.2014','%m.%d.%Y').date()
 removedTime = dt.datetime.strptime('4.20.2015','%m.%d.%Y').date()
 removedTimeSpaced = dt.datetime.strptime('4.21.2015','%m.%d.%Y').date()
+try:
+    config = BgtConfiguration()
+    config.parseCommandLine(sys.argv)
+except BadCommandLineException as e:
+    print e.message
+    printHowToUse()
+    sys.exit()
 
 plt.figure(figsize=(20,12))
-loadAndPlot(root_path + "output.festivals.csv", 'o', 'r', '-.', '/')
+loadAndPlot(config.inputfiles[0], 'o', 'r', '-', '/')
+#loadAndPlot(root_path + "output.festivals.csv", 'o', 'r', '-.', '/')
 #loadAndPlot(root_path + "output.geocaching.csv", 'o', 'g', '-', '')
-loadAndPlot(root_path + "output.sails.csv", '*', 'b', '--', '\\')
-loadAndPlot(root_path + "output.waterlock.csv", 'D', 'g', '-', '|')
+#loadAndPlot(root_path + "output.sails.csv", '*', 'b', '--', '\\')
+#loadAndPlot(root_path + "output.waterlock.csv", 'D', 'g', '-', '|')
 plt.yscale('log')
 x1,x2,y1,y2 = plt.axis()
 plt.axis((dt.datetime.strptime('10.1.2014','%m.%d.%Y').date(),x2,0,10000))
