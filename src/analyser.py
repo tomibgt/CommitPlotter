@@ -46,9 +46,8 @@ def freq(dates, deltas, c, l, h):
 
 def loadAndPlot(path, f, c, l, h):
     data = np.genfromtxt(path, dtype=None, delimiter=";", usecols=[1,5])
-    #data = np.genfromtxt(path, dtype=None, delimiter=";", usecols=[1,5], names=True)
+    print data
     du = [d.split(" ")[0] for d in data[1:,0]]
-    #dates = [dt.datetime.strptime(d,'%m.%d.%Y').date() for d in du]
     dates = [dt.datetime.strptime(d,'%Y-%m-%d').date() for d in du]
     deltas = data[1:,1]
     freq(dates, deltas, c, l, h)
@@ -68,7 +67,7 @@ except BadCommandLineException as e:
     printHowToUse()
     sys.exit()
 
-plt.figure(figsize=(20,12))
+plt.figure(figsize=(20,9))
 loadAndPlot(config.inputfiles[0], 'o', 'r', '-', '/')
 #loadAndPlot(root_path + "output.festivals.csv", 'o', 'r', '-.', '/')
 #loadAndPlot(root_path + "output.geocaching.csv", 'o', 'g', '-', '')
@@ -76,7 +75,7 @@ loadAndPlot(config.inputfiles[0], 'o', 'r', '-', '/')
 #loadAndPlot(root_path + "output.waterlock.csv", 'D', 'g', '-', '|')
 plt.yscale('log')
 x1,x2,y1,y2 = plt.axis()
-plt.axis((dt.datetime.strptime('10.1.2014','%m.%d.%Y').date(),x2,0,10000))
+plt.axis((dt.datetime.strptime('10.1.2014','%m.%d.%Y').date(),x2,0,100000))
 plt.axvline(deprecatedTime, linewidth=2, color='black')
 plt.text(deprecatedTime,500,'Deprecation Time',rotation=90, fontsize=20)
 plt.axvline(removedTime, linewidth=2, color='black')

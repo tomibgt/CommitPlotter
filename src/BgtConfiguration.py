@@ -25,7 +25,7 @@ class BgtConfiguration(object):
         if len(argv) < 2:
             raise BadCommandLineException("Too few commandline parameters.")
         self.inputfiles = argv
-        argv.pop(0)
+        self.inputfiles.pop(0)
 
     def readConfigfile(self, configFilePathName):
         self.fileConfig = ConfigParser.ConfigParser()
